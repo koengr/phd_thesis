@@ -1,0 +1,74 @@
+%% Creator: Inkscape inkscape 0.92.4, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'hwp_driving_phases.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{773.842091bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.80255832)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{hwp_driving_phases.pdf}}%
+    \put(0.76671982,0.38421224){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.28222257\unitlength}\raggedright X\end{minipage}}}%
+    \put(0.35824958,0.79121368){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.32445515\unitlength}\raggedright Y\end{minipage}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{hwp_driving_phases.pdf}}%
+    \put(0.23999793,0.70418751){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.0663128\unitlength}\raggedright \end{minipage}}}%
+    \put(0.20421007,0.68208325){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.08210156\unitlength}\raggedright \end{minipage}}}%
+    \put(0.13079773,0.62876459){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.2389366\unitlength}\raggedright $\omega t$\end{minipage}}}%
+    \put(0.11868535,0.15464438){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.2389366\unitlength}\raggedright $\omega t$\end{minipage}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{hwp_driving_phases.pdf}}%
+    \put(0.64868429,0.50183993){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.2389366\unitlength}\raggedright $\phi$\end{minipage}}}%
+    \put(0.23369594,0.70005156){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.2389366\unitlength}\raggedright $1$\end{minipage}}}%
+    \put(0.05068568,0.53185877){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.2389366\unitlength}\raggedright $2$\end{minipage}}}%
+    \put(0.04133202,0.23417465){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.2389366\unitlength}\raggedright $3$\end{minipage}}}%
+    \put(0.24258135,0.0642755){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.2389366\unitlength}\raggedright $4$\end{minipage}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{hwp_driving_phases.pdf}}%
+    \put(0.29782976,0.72225401){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.2389366\unitlength}\raggedright $\phi_1$\end{minipage}}}%
+    \put(1.59957194,0.14354279){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.99456765\unitlength}\raggedright \end{minipage}}}%
+  \end{picture}%
+\endgroup%

@@ -1,0 +1,145 @@
+
+
+\definecolor{thesis_orange}{cmyk}{0,0.47,0.92, 0.04}
+\definecolor{thesis_blue}{cmyk}{0.7, 0.39, 0.0, 0.23 }
+\definecolor{online_orange}{rgb}{1,0.5,0}
+
+
+
+%% General colors:
+
+	\newcommand{\partcolour}{Orange}  % Sets the color of the PART in the TOC % Was ORANGE
+	\newcommand{\partbackgroundcolor}{Orange} % Sets background of PART pages % Was ORANGE
+	\newcommand{\parttextcolor}{White}  % Sets text color of PART pages
+	\newcommand{\toclinkcolor}{Orange}  % Sets color of \cref{}
+	\newcommand{\citecolor}{NavyBlue}  % Sets color of \cite{}
+
+
+
+
+%% Referencing and importing
+
+
+\usepackage[ hypertexnames=false,hyperfootnotes=false,%
+	colorlinks=true,%
+	linkcolor=\toclinkcolor,%
+	linkbordercolor=\toclinkcolor,%
+	citecolor=\citecolor,%
+	citebordercolor=\citecolor,%
+	filecolor=\citecolor,%
+	urlcolor=\citecolor,%
+	linktocpage=true]{hyperref}
+
+\usepackage{doi}
+
+
+
+%% New PART definition:
+
+
+\usepackage{afterpage} %Allows the use of \pagecolor{yellow}\afterpage{\nopagecolor}
+
+\newcommand{\mypart}[1]{
+	\pagestyle{empty}
+	\cleardoublepage
+	\pagecolor{\partbackgroundcolor}
+	 \part{#1}
+	\pagecolor{white}
+	\pagestyle{fancy}
+}
+
+
+
+%% Sizing
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm,headheight=15pt]{geometry}
+
+
+
+
+%% Choose a font 
+%\usepackage{mathptmx}
+%\usepackage{mathpazo}
+%\usepackage{bookman} 
+%\usepackage{charter} 
+%\usepackage{newcent} 
+\usepackage{fourier} 
+
+
+
+%% Captions
+\usepackage[font=small, labelfont=bf,% justification=raggedright,
+format=hang]{caption}
+
+
+%%%%%%% Change appearance of PART titles in TOC
+\usepackage{tocloft}
+\renewcommand*{\cftpartfont}{\color{\partcolour}\Large\bfseries} % Changes appearance of PARTs in ToC.
+\cftpagenumbersoff{part} %% No page number behind parts. 
+
+
+
+%%%%%%  Change appearance of Section/Chapter title headings
+\usepackage{titlesec}
+
+%% Change smaller sections
+\titleformat{\section}
+  { \bfseries \Large}{\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\sffamily \large}{\thesubsection}{1em}{}
+
+\newcommand{\chapterbar}{ \titlerule[1pt]  \vspace{10pt}  }
+
+
+%% change the CHAPTERS
+\titleformat{\chapter}[display]%
+	{ \filcenter }% Formatting applied to the whole title (previously sffamily, before that normalfont, normalsize, raggedleft, scshape)
+	{ \scshape {\chaptertitlename}  \thechapter  }% This is the label
+	{1pc} % separation between label and title body
+	{ \chapterbar \Huge \bfseries }% before-code is code preceding the title body. After-code might need optional [explicit]{titlesec} ?
+	
+\titlespacing{\chapter}{0pt}{2cm plus 5mm minus 5mm}{1.8cm plus 5mm minus 5mm} %Sets the space before/after the chapter headings
+
+	
+%% change the PARTS
+%White color, sans serif
+\titleformat{\part}[display]%
+	{\color{\parttextcolor}\bfseries
+	%\sffamily
+	\Huge
+	%\scshape
+	\centering}% Formatting applied to the whole title
+	{Part \MakeUppercase{\thepart}} % This is the label
+	{1pc} % separation between label and title body
+	{} % before-code is code preceding the title body
+	{} % after-code 
+
+
+
+%%%% Header settings 
+\usepackage{fancyhdr}
+\usepackage{emptypage} %This pack­age pre­vents page num­bers and head­ings from ap­pear­ing on empty pages.
+\fancypagestyle{plain}{ %% The adjusted Plain style changes the appearance for Section/Part/Chapter pages.
+  \fancyhf{}%
+}
+
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\renewcommand{\chaptermark}[1]{\markboth{\it \chaptername\ \thechapter.\ #1}{}} % Standard chapter typesetting
+\renewcommand{\sectionmark}[1]{\markright{\it \thesection.\ #1}}
+
+
+\fancyhead[LO]{\rightmark}
+\fancyhead[LE]{\thepage}
+\fancyhead[RE]{\leftmark}
+\fancyhead[RO]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+%% Style for the final pages
+\fancypagestyle{lastpages}{%
+  \fancyhf{}% Clear header and footer
+  \fancyhead[LE]{\thepage}
+  \fancyhead[RO]{\thepage}
+}

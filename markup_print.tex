@@ -1,0 +1,157 @@
+%% In the PRINT markup, we choose explicit CMYK colors. They look a bit faded, but will look right when printed!
+
+\definecolor{thesis_orange}{cmyk}{0,0.47,0.92, 0.04}
+\definecolor{thesis_blue}{cmyk}{0.7, 0.39, 0.0, 0.23 }
+
+
+%% General colors:
+
+	\newcommand{\partcolour}{thesis_orange}  % Sets the color of the PART in the TOC
+	\newcommand{\partbackgroundcolor}{thesis_orange} % Sets background of PART pages
+	\newcommand{\parttextcolor}{White}  % Sets text color of PART pages
+	\newcommand{\toclinkcolor}{thesis_orange}  % Sets color of \cref{}
+	\newcommand{\citecolor}{thesis_blue}  % Sets color of \cite{}
+
+
+
+
+%% Referencing and importing
+\usepackage[ hypertexnames=false,hyperfootnotes=false,%
+	colorlinks=false,%
+	linktocpage=true]{hyperref}
+
+
+\usepackage{doi}
+
+
+
+%% New PART definition:
+\usepackage{afterpage} %Allows the use of \pagecolor{yellow}\afterpage{\nopagecolor} 
+
+\newcommand{\mypart}[1]{
+\pagestyle{empty}
+\cleardoublepage
+\pagecolor{\partbackgroundcolor}
+ \part{#1}
+\pagecolor{white}
+\pagestyle{fancy}
+}
+
+
+
+
+
+
+%% Sizing
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm,headheight=15pt]{geometry}
+
+
+
+
+%% Choose a font 
+%\usepackage{mathptmx}
+%\usepackage{mathpazo}
+%\usepackage{bookman} 
+%\usepackage{charter} 
+%\usepackage{newcent} 
+\usepackage{fourier} 
+
+
+
+%% Captions
+\usepackage[font=small, labelfont=bf,% justification=raggedright,
+format=hang]{caption}
+
+
+%%%%%%% Change appearance of PART titles in TOC
+\usepackage{tocloft}
+\renewcommand*{\cftpartfont}{\color{\partcolour}\Large\bfseries} % Changes appearance of PARTs in ToC.
+\cftpagenumbersoff{part} %% No page number behind parts. 
+
+
+
+%%%%%%  Change appearance of Section/Chapter title headings
+\usepackage{titlesec}
+
+%% Change smaller sections
+\titleformat{\section}
+  { \bfseries \Large}{\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\sffamily \large}{\thesubsection}{1em}{}
+
+\newcommand{\chapterbar}{ \titlerule[1pt]  \vspace{10pt}  }
+
+
+%% change the CHAPTERS
+\titleformat{\chapter}[display]%
+	{ \filcenter }% Formatting applied to the whole title (previously sffamily, before that normalfont, normalsize, raggedleft, scshape)
+	{ \scshape {\chaptertitlename}  \thechapter  }% This is the label
+	{1pc} % separation between label and title body
+	{ \chapterbar \Huge \bfseries }% before-code is code preceding the title body. After-code might need optional [explicit]{titlesec} ?
+	
+\titlespacing{\chapter}{0pt}{2cm plus 5mm minus 5mm}{1.8cm plus 5mm minus 5mm} %Sets the space before/after the chapter headings
+
+	
+%% change the PARTS
+%White color, sans serif
+\titleformat{\part}[display]%
+	{\color{\parttextcolor}\bfseries
+	%\sffamily
+	\Huge
+	%\scshape
+	\centering}% Formatting applied to the whole title
+	{Part \MakeUppercase{\thepart}} % This is the label
+	{1pc} % separation between label and title body
+	{} % before-code is code preceding the title body
+	{} % after-code 
+
+
+
+%%%% Header settings 
+\usepackage{fancyhdr}
+\usepackage{emptypage} %This pack­age pre­vents page num­bers and head­ings from ap­pear­ing on empty pages.
+\fancypagestyle{plain}{ %% The adjusted Plain style changes the appearance for Section/Part/Chapter pages.
+  \fancyhf{}%
+}
+
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\renewcommand{\chaptermark}[1]{\markboth{\it \chaptername\ \thechapter.\ #1}{}} % Standard chapter typesetting
+\renewcommand{\sectionmark}[1]{\markright{\it \thesection.\ #1}}
+
+
+\fancyhead[LO]{\rightmark}
+\fancyhead[LE]{\thepage}
+\fancyhead[RE]{\leftmark}
+\fancyhead[RO]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+%% Style for the final pages
+\fancypagestyle{lastpages}{%
+  \fancyhf{}% Clear header and footer
+  \fancyhead[LE]{\thepage}
+  \fancyhead[RO]{\thepage}
+}
+
+
+
+%%% ADD CROP MARKERS
+% A4 size: 210 * 297
+% B5 thesis size: 170 * 240, differs by a factor 1.235...
+% To adjust for 2*3mm crops at B5 size, we add 7.4118 \approx 7.42 mm to the latex output, which assumes A4. 
+
+
+\usepackage[
+  % set width and height to a4 width and height + 6mm
+  width=21.742truecm, height=30.442truecm,
+  % use any combination of these options to add different cut markings
+  cam, %axes, frame, cross,
+  % set the type of TeX renderer you use
+  pdftex,
+  % center the contents
+  center
+]{crop}
+

@@ -1,0 +1,21 @@
+
+\subsection*{Quantum protocols for few-qubit devices}
+
+With the advent of scalable quantum information technology, accurate control of quantum systems is becoming increasingly important. We study theoretical control protocols tailored for  near-term experiments. The main results can be grouped in two categories. \cref{part:multiqubit} deals with the construction of multiqubit logic gates through resonant driving, whereas in \cref{part:adiabatic} we focus on adiabatic transfer of quantum states. The preceding chapters in \cref{part:preliminaries} contain preliminaries to these subjects. 
+
+\paragraph{} In \textbf{Part II}, we consider multiqubit gates, such as the \texttt{Toffoli}$_N$. These are essential for most quantum algorithms, but turn out to be hard to perform on current quantum computer experiments in practice.  As opposed to the standard approach of compiling larger unitaries into sequences of elementary gates that act on at most two qubits, we propose a continuously evolving Hamiltonian which implements highly selective multiqubit gates in a strongly-coupled many-body quantum system. We exploit the selectiveness of resonant driving to exchange only $2$ out of $2^N$ eigenstates of some background Hamiltonian, leading to a unitary time evolution we call \texttt{iSWAP}$_{t_1,t_2}$. The basis in which these states are exchanged is the eigenbasis of the background Hamiltonian, and to make this operation relevant to the computational basis, we introduce the concept of \emph{eigengates}, operations that map between the two bases. 
+
+We analyze and simulate such gates in three concrete systems: 
+\begin{itemize}
+\item the Krawtchouk chain, an example of an open XX chain that maps to free fermions,
+\item Polychronakos' model, an example of an XXX or Heisenberg chain with long-ranged interactions,
+\item and the Ising model, in which one special qubit must be coupled to all others.
+\end{itemize}
+
+\paragraph{} 
+In \textbf{Part III}, we consider adiabatic protocols that transfer a quantum state through a spatially extended system. Such protocols find widespread application in current physics and chemistry experiments, and may be necessary in future quantum information technologies. Still, most adiabatic protocols are only defined on linear chains. We extend two types of protocols to work on more general \emph{bipartite} graphs, under certain restrictions. 
+
+The first type deals with a single quantum excitation hopping on a graph. The conventional protocols called STImulated Raman Adiabatic Passage (STIRAP) and Coherent Tunnelling by Adiabatic Passage (CTAP) allow the excitation to be transported between the ends of a linear chains, in a way that is highly resilient to decoherence. We prove that similar protocols can be applied on any (semi-)bipartite graph which allows a perfect matching both when the sender is removed and when the receiver is removed.
+
+Secondly, we consider an anti-ferromagnetic XXX spin system laid out on a graph. We find that spin states can be transferred and entanglement between distant sites can be created, as long as the graph is bipartite and obeys a certain balance between the maximum spin on both parts.
+\vfill

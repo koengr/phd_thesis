@@ -1,0 +1,321 @@
+\documentclass[12pt,twoside]{book}
+
+% Choose between the layouts for printing (with 3mm crop markers and CMYK colors) or digital use (with front cover and RGB colors)
+\def\printversion{0}
+
+%% Encoding settings
+\usepackage[T1]{fontenc} 
+\usepackage{textcomp}
+
+
+%%% Essential packages
+\usepackage[dutch,english]{babel}
+\usepackage{csquotes} % Needed with Babel when using Biblatex.
+\usepackage{amsmath,amssymb,amsthm,bm} % bm is for bold mathematics
+\usepackage{import} % allows relative paths in \inputs and \includegraphics...
+\usepackage[cmyk,dvipsnames]{xcolor}
+
+\usepackage{dsfont}% For pretty identity operator
+\usepackage{qcircuit} % For quantum circuits
+
+%% ALlow tables with multiple lines
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+
+%%% For fancy ToC
+\usepackage[nottoc]{tocbibind}
+
+%% To import the PDF cover
+\usepackage{pdfpages}
+
+
+%%%%% Bibliography
+
+%%% BIB USING BIBTEX
+\usepackage[backend=biber,style=alphabetic,backref=true
+	maxalphanames=4,minalphanames=3,minnames=3,maxbibnames=5,
+%	date=year,
+%	giveninits=true
+	]{biblatex} %Other options: hyperref, backref, 
+
+\addbibresource{zotero_lirbary.bib} 
+\addbibresource{bibliography_extras.bib}
+
+% Markup
+\DeclareFieldFormat[inproceedings]{booktitle}{#1}
+\DeclareFieldFormat*{title}{\mkbibitalic{#1}}
+\DeclareFieldFormat[article]{volume}{\mkbibbold{#1}}
+\DeclareFieldFormat[article]{journaltitle}{#1}
+\renewbibmacro{in:}{} %% Remove the silly In: text
+\AtEveryBibitem{\clearfield{issn}} % Remove silly ISSN code per journal. Alternative: disbale ISBN in \usepackage. 
+\AtEveryCitekey{\clearfield{issn}}
+
+
+% My own VOLUME and NUMBER
+\renewbibmacro*{volume+number+eid}{%
+  \printfield{volume}%
+  \setunit{\addcomma\space}%
+%  \setunit*{\adddot}% DELETED
+  \printfield{number}%
+  \setunit{\addcomma\space}%
+  \printfield{eid} }
+  
+% Do not print URL if already DOI present
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map[overwrite]{
+      \step[fieldsource=doi, final]
+      \step[fieldset=url, null]
+      \step[fieldset=eprint, null]
+    }  
+  }
+}
+
+% Don't print month/day, except for news items or websites. 
+\AtEveryBibitem{%
+  \ifboolexpr{not test {\ifentrytype{online}} }
+    {\clearfield{month}%
+     \clearfield{day}}
+    {}%
+}
+
+
+
+
+
+
+%%%%%%% ALL THE MARKUP goes into a separate file:
+\if\printversion1
+\include{markup_print}
+\else
+\include{markup}
+\fi
+
+\providecommand{\mypart}[1]{\part{#1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages that come AFTER markup:
+
+
+\usepackage[capitalize]{cleveref}
+\creflabelformat{equation}{#2\textup{#1}#3}  % No more parentheses around "#1"
+
+
+%%%%%%% My own symbols:
+
+%% Define operator norm and commonly used symbols
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+%% Define Bra/Ket
+\usepackage{mathtools}
+\DeclarePairedDelimiter\bra{\langle}{\rvert}
+\DeclarePairedDelimiter\ket{\lvert}{\rangle}
+\DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1 \delimsize\vert #2}
+
+%% Define theorem environments
+%\theoremstyle{plain}       
+\newtheorem{theorem}{Theorem}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{claim}{Claim}
+
+
+
+%% Change the appearance of footnotes
+%\renewcommand{\thefootnote}{\alph{footnote}}	
+
+%% Used in intro
+\newcommand{\pauli}{\bm{\sigma}}
+\newcommand{\X}{X}
+\newcommand{\Y}{Y}
+\newcommand{\Z}{Z}
+
+
+%% SPECIFIC FOR POLYCHRONAKOS
+\usepackage{blkarray}% http://www.hss.caltech.edu/~kcb/TeX/kbordermatrix.sty
+
+%%% Make 0-1 matrices more clear:
+\newcommand{\one}{ {\color{Bittersweet} 1} }
+
+%%% For driving amplitude (Rabi frequency)
+\newcommand{\A}{ \Omega }
+\newcommand{\iswap}{\texttt{iSWAP}}
+
+
+%%% SPECIFIC for star driving
+\newcommand{\Hi}{H_\text{Ising}}
+\newcommand{\Hd}{H_\text{drive}}
+\newcommand{\Dres}{\Delta_{\text{res}}}
+\newcommand{\q}{q} %% Sets the Hamming weigth symbol
+\newcommand{\Hq}{H_q} %% Sets the part of the Hamiltonian that depends only on $q$.
+\newcommand{\tHq}{\tilde{H}_q}
+\newcommand{\wt}[1]{{ |#1|_{H} }}
+
+%% SPECIFIC for CTAP
+\DeclareMathOperator{\rk}{rk}
+
+%% SPECIFIC FOR HEISENBERG
+\newcommand{\Stot}{{\hat{S}_\text{tot}}}
+\newcommand{\stot}{{s}}
+\newcommand{\Sztot}{{\hat{S}^z_\text{tot}}}
+\newcommand{\sztot}{{s^z_\text{tot}}}
+
+%% Consistent typesetting of the title
+\newcommand{\thetitle}{\LARGE \textbf{Quantum protocols for few-qubit devices}}
+
+
+
+
+\begin{document}
+
+\if\printversion0
+\includepdf[pages=-]{cover/Cover_QuantumWaves_digital_RGB.pdf}
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%% First pages %%%%%%%%%%%%%%%%%%%%%%%%
+\frontmatter
+
+
+
+%% The title page (RHS)
+\thispagestyle{empty}
+\begin{center}
+\vspace*{4cm}
+{ \thetitle } \\[1cm] %% My own defined title command.
+\end{center}
+
+
+%% FIRST PAGES
+
+\import{./0_frontpages/}{frontpages}
+
+
+%% 
+%\cleardoublepage
+\clearpage
+\section*{List of publications}
+%\addcontentsline{toc}{chapter}{List of publications}
+\import{./0_intro/}{list_of_publications}
+
+%%%%%%%%%%%%%%%%% Abstract %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\section*{Abstract}
+%\addcontentsline{toc}{chapter}{Abstract}
+\import{./9_backmatter/}{abstract_short}
+
+
+
+\clearpage
+\setcounter{tocdepth}{1}
+\tableofcontents
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% PART 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mainmatter
+
+
+\mypart{Preliminaries}
+\label{part:preliminaries}
+
+
+%%%%%%%%%%%%%%%%% Introductions
+\clearpage
+\import{./0_intro/}{intro}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% PART 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mypart{Resonantly driven multiqubit gates}
+\label{part:multiqubit}
+
+\chapter{Introduction to resonant multiqubit gates}
+\label{chap:gates_intro}
+\graphicspath{{./1__gate_intro/img/}}
+\import{./1__gate_intro/}{gates_intro}
+
+\chapter{The Krawtchouk chain}
+\label{chap:krawtchouk}
+\import{./1_krawtchouk/}{krawtchouk}
+%
+
+\chapter{Polychronakos' model}
+\label{chap:pc}
+\import{./2_polychronakos/}{polychronakos}
+
+
+\chapter{The Ising star model}
+\graphicspath{{./2_star/img/}}
+\label{chap:star}
+\import{./2_star/}{star}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% CHAPTER 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage
+\mypart{Adiabatic transport of quantum states}
+\label{part:adiabatic}
+
+\graphicspath{{./3_ctap/img/}}
+\chapter{STIRAP and CTAP on semi-bipartite graphs}
+\label{chap:ctap}
+\import{./3_ctap/}{ctap_v2}
+
+
+\chapter{State transfer in bipartite anti-ferromagnetic spin networks}
+\label{chap:heisenberg}
+\import{./4_heisenberg/}{heisenberg}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% PART 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mypart{The Closing Matters}
+
+
+%\renewcommand*{\bibfont}{\footnotesize} % Optionally, make bibliography smaller.
+\printbibliography[heading=bibintoc]
+
+
+
+\backmatter
+\pagestyle{lastpages}
+
+% \clearpage
+\section*{List of symbols and notation}
+\addcontentsline{toc}{chapter}{List of symbols and notation}
+\import{./0_intro/}{list_of_symbols}
+
+
+
+\clearpage
+\section*{Nederlandse samenvatting}
+\subsection*{Protocollen voor kleine quantumcomputers}
+\addcontentsline{toc}{chapter}{Nederlandse samenvatting}
+\import{./9_backmatter/}{samenvatting}
+
+
+\clearpage
+\section*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+\import{./9_backmatter/}{acknowledgements}
+
+
+\clearpage
+{ \small 
+\import{./9_backmatter/}{illcdissertations}
+}
+
+
+
+\end{document}

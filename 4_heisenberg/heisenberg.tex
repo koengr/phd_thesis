@@ -1,0 +1,275 @@
+\section{Introduction}
+
+In \cref{sec:howtotransport}, we argued that reliable transport of quantum states is essential for future quantum information technologies \cite{DiVincenzo2000}. If the quantum information is carried by a spin degree of freedom, then it is a natural choice to transport the states over a network of spinful particles \cite{Bose2007,Nikolopoulos2014}. 
+
+In this chapter, which is based on Ref. \cite{Groenland2019}, we consider such a system of spinful particles, where the spins are coupled through anti-ferromagnetic (AFM) isotropic Heisenberg interactions. We show that, if Alice and Bob can adiabatically change the strengths of the couplings surrounding a small subsystem of a suitable network, then they can send each other quantum information and establish entanglement. 
+
+The protocols, as illustrated in \cref{fig:protocolsketch}, are then straightforward: to transfer a spin state, Alice starts uncoupled from the rest of the system and initializes her site in a state $\psi$. The rest of the system must be in a ground state with total spin $s=0$. She then adiabatically ramps up some coupling to connect to the system, after which Bob ramps down the couplings connecting his site, finding $\psi$ at his now isolated site. Likewise, Alice and Bob can establish maximally entangled states between their sites by starting with the full network, including their sites, in a global $s=0$ ground state. They then adiabatically uncouple their sites from the system, ending up with the unique $s=0$ state shared between their sites. Such protocols are abundant in existing literature (see \cref{sec:howtotransport}), but this literature focused mainly on linear chains. 
+
+This contribution strengthens previous results by proving that protocols on a chain do indeed always work in the adiabatic limit, whilst extending the applicability to much more general network graphs, under the assumptions given below. In particular, we allow different spins per site, we allow more general adiabatic paths, and sender/receiver are not limited to sit at the ends of the system. 
+Moreover, we extend the state transfer protocol such that a state is not immediately transferred, but rather encoded in the ground state of the whole system. After any amount of time, one out of various parties can then decide to localize the state at their site, using only local controls, without requiring any action from the other parties. 
+
+The intuition that inspired this work is that the Heisenberg coupling preserves the total spin $\hat{S}^2$, and its $z$ component $\hat{S}^z$, of the whole system. If the final state has one part which is in a total spin $0$ ground state, then the rest of the system must have copied whatever the initial spin properties were. The adiabatic theorem guarantees that, as long as couplings are changed sufficiently slowly with respect to a nonzero energy gap, the precise details of the procedure are unimportant. This reasoning is depicted in \cref{fig:protocolsketch}.
+
+Our results require the following assumptions. Recall the definition of $g$ in \cref{eq:imbalance}, which is the difference between the maximum total spin of both parts. To transfer a spin-$s$ state, all parties must have $g=s$, and the system without either of the parties must consist of connected components, each of which must have $g=0$. For entanglement distribution, both parties must hold a subsystem with a $g$ of opposite sign, and the global system must start connected and have $g=0$. When the two parties are disconnected, the leftover system must again consist of components with $g=0$ each. For either protocol, the precise details of the adiabatic path are unimportant, as long as the whole system satisfies a criterion we call \emph{spin-$s$ compatible} at all times, which guarantees the uniqueness of the ground state. We do not prove that these requirements are optimal, hence further generalizations may be possible. 
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{img_manuscript/protocol_sketch.pdf} 
+\end{center}
+\caption{A sketch of the intuition behind our results. In the state transfer protocol, Alice initializes a spinful state while the rest of the system has zero total spin. The whole system then exhibits the same spin properties as the initialized state. After an appropriate adiabatic trajectory, Bob becomes disconnected. If the remainder of the system has a spin-zero ground state, then Bob's site must contain all spin information. Similarly, in entanglement distribution, Alice and Bob start with a state with zero total spin. After they disconnect, if the remainder of the system has total spin zero, then they must also share a total spin zero state. }
+\label{fig:protocolsketch}
+\end{figure}
+
+
+
+\subsection{Chapter structure}
+The remainder of this chapter is laid out as follows. \cref{sec:spin_encoding} contains the main technical part of our work, as we make our intuition on the conservation of total spin more concrete, and we prove that given our graph restrictions, there is a unique ground state. \cref{sec:applications} provides more details on our adiabatic protocols, \cref{sec:errors} discusses errors in real-world implementations, and \cref{sec:implementations} addresses possible near-term experimental implementations. We finish with a discussion and outlook in \cref{sec:discussion}.
+
+
+
+\section{Ground states of symmetry-protected subspaces}
+\label{sec:spin_encoding}
+\subsection{Preliminaries}
+We give a quick recap of our graph-theoretic conventions introduced in \cref{sec:graphs} and the theory of spin particles and the Heisenberg model in \cref{sec:XXXmodel}. 
+
+Consider a network of spins, described by a graph $G = (V, E, w)$, with on each vertex (or site) $j \in V$ a spin particle with total spin $s_j$, described by the spin operator $\vec{S}_j = ( \hat{S}_j^x, \hat{S}_j^y, \hat{S}_j^z )^T$. Note that we allow a different value of spin $s_j$ per site. Spins which share an edge $(j,k) \in E$ interact with isotropic, anti-ferromagnetic Heisenberg interaction of strength $w_{jk}$, and we assume full control over each of these interaction strengths. Such a system is described by the Hamiltonian 
+\begin{align}
+H = \sum_{(j,k) \in E} w_{jk} \ \vec{S_j} \cdot \vec{S_k},  \hspace{1cm} (w_{jk} > 0).
+\label{eqn:heisenberg}
+\end{align}
+As before, to avoid confusion between operators and their eigenvalues, we denote spin operators in upper case with a hat, and scalars as lower-case symbols without hat. We define the spin operators $\vec{S}_\text{tot} = \sum_{j \in V} \vec{S}_j$, such that $\Stot^2$ has eigenvalues $s(s+1)$, and total spin  $z$-component $\Sztot = \sum_{j \in V} \hat{S}_j^z$ which has eigenvalues $m$, taking on values ranging from $-s$ up to $s$ in integer steps. Likewise, for a subsystem $I \subset V$ we denote the total spin operator on sites within that subsystem as $\vec{S}_I = \sum_{j \in I} \vec{S}_j$ with corresponding spin values $s_I$ and $z$-magnetization $m_I$. We use the term singlet to denote a state with $s=0$. 
+
+Because $H$, $\Stot$ and $\Sztot$ mutually commute, $s$ and $m$ can be used to index eigenstates of $H$. We let $\mathcal{H}_{s,m}$ denote the subspace with fixed values $s$ and $m$. For systems with at least three sites, $\mathcal{H}_{s,m}$ may consist of more than one state, hence we require a third quantum number to establish a complete basis. We denote the eigenbasis of $H$ as $\ket{s,r,m}$, where the label $r \in \{0, 1, 2, \ldots \}$ orders the states within $\mathcal{H}_{s,m}$ by \emph{increasing} energy\footnote{The label $r$ is ill-defined whenever states have degenerate energies. This should cause no ambiguities in this work, as we consider only the ground state, which is assumed to be non-degenerate within the appropriate subspace.}. \cref{fig:HeisenbergSubspaces} graphically depicts this decomposition of the total Hilbert space.
+
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{img_manuscript/HeisenbergSubspaces_flat.pdf} 
+\caption{The decomposition of our Hilbert space using quantum numbers $s$, $m$ and $r$, here depicted for the case of four spin-$\frac{1}{2}$ particles. For each total spin $s =0, 1$ or $2$ (vertical), the $2s+1$ possible $z$-magnetizations $m$ are laid out horizontally. The multiplicities of the spin spaces $N_{\frac{1}{2},\frac{1}{2},\frac{1}{2},\frac{1}{2}}^{\{0,1,2\}}$ are 2, 3 and 1, respectively, and states that differ by multiplicity-label $r$ are depicted in the depth-dimension. This way, each square corresponds to single state. The Hamiltonian $H$ must preserve labels $s$ and $m$, hence perturbing $w_{jk}$ can only excite states that differ in label $r$. }
+\label{fig:HeisenbergSubspaces}
+\end{figure}
+
+We denote the $2s+1$-dimensional spin-$s$ representation of SU($2$) as $(s)$. It is known from representation theory that the space of $n$ spin particles $s_1, s_2, \ldots, s_j, \ldots, s_n$ decomposes as 
+\begin{align}
+\bigotimes_{j=1}^n (s_j) = \bigoplus_{s} N_{s_1, s_2, \ldots s_n}^{s} (s) 
+\label{eqn:clebschgordan}
+\end{align}
+where the multiplicities $N^s_{s_1, s_2, \ldots s_n}$ of spin representation $(s)$ can be found by consecutive application of \cref{eqn:intr_clebschgordanrule}. 
+
+We say that the network graph $G$ is bipartite if for all edges $(j,k) \in E$, we have $j \in V_1$ and $k \in V_2$ or vice versa. Two sites $j$ and $k$ are connected if there exists a sequence $(J_{j,a_1}, J_{a_1,a_2}, \ldots J_{a_n, k})$ of nonzero elements. A graph or subsystem is connected if all pairs of vertices within that graph or subsystem are connected. If a system is not connected, then we use connected components to mean the largest possible subsystems in which all vertices are connected. The spin imbalance $g$ of a spin system on a bipartite graph is defined as: 
+\begin{align}
+g = \sum_{j \in V_1} s_j - \sum_{j \in V_2} s_j = \max s_{V_1} - \max s_{V_2}.
+\end{align}
+Note that spin imbalances can be simply added when combining spin systems: if subsystems have spin imbalances $g_1, g_2, \ldots$, then the combined system has a spin imbalance $g = \sum g_j$. The Lieb-Mattis theorem \cite{Lieb1962} (see \cref{thm:LiebMattis}) states that each connected component with spin imbalance $g_j$ has a unique spin-$s_j$ subspace as ground subspace, whose the total spin $s_j= |g_j|$. 
+
+
+Our protocols critically rely on the adiabatic theorem \cite{Born1928}  (see \cref{sec:adiabatic}), and throughout this work, we will assume that the changes to the Hamiltonian are sufficiently slow compared to the relevant energy gap. In our case, this gap typically refers to the energy difference between the ground state and the first excited state, within a symmetry-protected sector (typically $\mathcal{H}_{s,m}$). Often, the gap may vanish in the thermodynamic limit, but we restrict ourselves to finite-sized systems. Still, for finite systems it is possible that the ground state becomes degenerate, in which case the gap closes and the adiabatic theorem can not be applied.
+
+
+\subsection{Preservation of the ground state of $\mathcal{H}_{s,m}$}
+For our adiabatic protocols, we aim to show that information can be encoded in a protected subspace, in such a way that amplitude can not leak out of the subspace, and such that the subspace has a gap at all times. For the state transfer protocol, we aim to encode a quantum state $\ket{\psi} \in \mathbb{C}^{2s+1}$ as $\ket{\psi} = \sum_{m=-s}^{+s} \psi_m \ket{s,0,m}$, hence out of all the possible spin-$s$ subspaces $(s)$ we require that one is the unique lowest energy subspace. Note that, for fixed $s$ and $r$ but varying $m$, all states have the exact same energy under $H$, guaranteeing that no relative phases occur within this subspace. Likewise, for entanglement distribution, we want to work within the unique global ground state which must have total spin $s=0$. 
+
+In this section, we show the following:
+\begin{enumerate}
+\item The subspace $\mathcal{H}_{s,m}$ is conserved under $H$ at all times.
+\item On a connected and bipartite graph with $|g| \leq s$, the subspace $\mathcal{H}_{s,m}$ has a unique ground state. 
+\item If a bipartite system is not connected, but consists of connected components with spin imbalances $g_1, g_2, \ldots g_l$, then the subspace $\mathcal{H}_{s,m}$ has a unique ground state if $N_{|g_1|, |g_2|, \ldots, |g_l|}^s = 1$.
+\item If one connected component has a spin imbalance $g = g_0 \neq 0$ while all other components have $g=0$, then the full information encoded in the lowest-energy spin-$g_0$ subspace is accessible at the component with spin imbalance $g_0$.
+\end{enumerate}
+We will argue why these observations hold in the remainder of this section, leaving in-depth discussion of our protocols for the next section. We stress that the requirements presented here are merely \emph{sufficient} requirements and by no means the most general \emph{necessary} conditions possible. By separating these conditions from the protocols, future generalizations can be straightforwardly applied to the protocols.
+
+
+\paragraph{1. The subspace $\mathcal{H}_{s,m}$ is conserved under $H$ at all times.}
+This property follows because each individual term $(\hat{S}_j \cdot \hat{S}_k)$ of $H$ commutes with $\Stot$ and $\Sztot$, hence $H$ can not change the quantum numbers $s$ and $m$, not even if the $w_{jk}$ are time-dependent.
+
+\paragraph{2. For $s \geq |g|$, $\mathcal{H}_{s,m}$ has a unique ground state. }
+The proof of this claim follows from the results by Lieb and Mattis in Ref. \cite{Lieb1962}, as restated in \cref{thm:LiebMattis}. We crucially need two of their  findings: 
+%
+\begin{quote}
+Assume the system is connected and bipartite, with spin imbalance $g$. Then the following holds:
+\begin{enumerate}
+\item Within a subspace of fixed $\Sztot = m_0$, there is a unique ground state.
+\item If $m_0 \geq |g|$, then this unique ground state has $s = m_0$.
+\end{enumerate}
+\end{quote}
+%
+From these observations, it follows that if $m_0 \geq |g|$, the subspace $\mathcal{H}_{{s=m_0},{m=m_0}}$ has a unique ground state. What about the other spaces? Recall that for fixed $s$, all values of $m$ have the same energy. Hence if $\mathcal{H}_{m_0,m_0}$ has a unique ground state, then all $\mathcal{H}_{m_0, m}$ have the same energies and in particular also a unique ground state. We conclude that any $\mathcal{H}_{s,m}$ with $s\geq |g|$ has a unique ground state, while we can not make general statements about total spins smaller than $|g|$. 
+
+\paragraph{}
+Let us take a step back here. With the previous two points, we have shown that in all connected and bipartite systems with $s\geq |g|$, one may adiabatically tune $w_{jk}$ without exciting the ground state $\ket{s,0,m}$ of $\mathcal{H}_{s,m}$: The quantum numbers $s$ and $m$ can never be changed by $H$, and the adiabatic theorem says that quantum number $r=0$ is approximately conserved.  However, when the system becomes disconnected, these results no longer hold. We therefore carefully analyze what happens upon disconnecting parts of the system, and we give sufficient conditions that guarantee a unique ground state.
+
+\paragraph{3. On disconnected subsystems.} 
+First, let us define precisely what we mean with connecting and disconnecting\footnote{Note the difference between `(dis)connecting' (the procedure described here) and `(dis)connected' (a property of a graph), although our definitions are such that no ambiguities should occur for any English conjugation of these words.}.
+We consider a system consisting of two subsystems $L$ and $R$. %
+Let the Hamiltonian on the combined system be of the form 
+\begin{align}
+H' = H_L + H_R + \sum_{i} \epsilon_i \hat{S}_{l_i} \cdot \hat{S}_{r_i},
+\label{eqn:connecting}
+\end{align}
+where $H_L$ and $H_R$ act only on subsystems $L$ and $R$ respectively, whilst $l_i$ are sites in $L$ and $r_i$ are sites in $R$. With connecting, we mean that the all parameters $\epsilon_i$ initially start at $0$, and at least one of the $\epsilon_i$ is adiabatically increased to some positive nonzero value, such that the combined system becomes connected. Likewise, if at least one $\epsilon_i$ is nonzero, we may disconnect $L$ from $R$ by adiabatically lowering all $\epsilon_i$ down to zero. 
+
+For disconnected systems, the uniqueness of the ground state of $\mathcal{H}_{s,m}$ does not necessarily hold any more. One might naively think that upon sending all $\epsilon_i \rightarrow 0$, the adiabatic process is saved because of two effects: If some $\epsilon_i \neq 0$ then there must be a unique ground state, and if all $\epsilon_i = 0$ the two subsystems are completely disconnected, hence we may as well look only at the ground states in each subsystem individually. However, if the gap closes \emph{asymptotically} as $\epsilon_i \rightarrow 0$, then our adiabatic trajectory potentially traverses a region with \emph{infinitesimally} small gap, hence the adiabatic time scale blows up. 
+
+To avoid such divergences, we require that both the connected (some $\epsilon_i > 0$) and the disconnected (all $\epsilon_i = 0$) configurations have a unique ground state. Then, because the eigenvalues of $H'$ are continuous functions of $\epsilon_i$, asymptotic vanishing of the gap is ruled out. 
+
+We propose the following sufficient requirement that guarantees a unique ground state of $\mathcal{H}_{s,m}$: all connected components, labeled by $1, 2, \ldots l$, must have spin imbalances $g_1, g_2, \ldots, g_l$ such that $N_{|g_1|, |g_2|, \ldots |g_l|}^s = 1$. We will henceforth call this requirement \emph{spin-$s$ compatible}. We prove its validity as follows: each component $j$ has a unique spin-$s_j$ ground subspace with total spin $s_j = |g_j|$. The degeneracy of these subspaces allows the combined system to configure itself in various possible total spin configuration, according to \cref{eqn:clebschgordan}. However, if $N_{|g_1|, |g_2|, \ldots |g_l|}^s = 1$, then there is just a single way in which the global ground subspace can configure itself that is compatible with total spin $s$, hence the ground state of $\mathcal{H}_{s,m}$ must be unique. In particular, this means that we may adiabatically connect and disconnect without disturbing the ground state of $\mathcal{H}_{s,m}$, as long as a system is spin-$s$ compatible both before and after the (dis)connection. 
+
+\paragraph{4. If only a single component has nonzero spin imbalance, then all ground subspace information is accessible there.} Let $\{ g_0, 0, 0, \ldots \}$ be the spin imbalances of the connected components of some system, such that the spin imbalance of the combined system is $g_0$. In general, it holds that $N_{|g_0|,0,0,\ldots}^{|g_0|} = 1$, which means that $\mathcal{H}_{|g_0|,m}$ has a unique ground state. We know precisely what this ground state looks like: all $g=0$ components are in their unique singlet ground state, while the component with $g=g_0$ is in the state $\ket{|g_0|,0,m}$. These states, with $m$ ranging from $-|g_0| \leq m \leq |g_0|$, span the ground subspace of the global system, and are completely determined by the component with nonzero spin imbalance. Any operations performed on the subsystem with $g=g_0$ are in one-to-one correspondence with changes in the global ground subspace, and vice-versa. 
+
+\paragraph{}
+In summary, throughout this section we showed that if the system remains spin-$s$ compatible, then the couplings $w_{jk}$ of $H$ can be changed adiabatically without affecting a quantum state's amplitude on the ground state of $\mathcal{H}_{s,m}$. Moreover, by changing the couplings $w_{jk}$ of a system with total spin $s$ in such a way that all components have $g=0$ except for a single component which has $g=s$, then the amplitudes of $\mathcal{H}_{s,m}$ for all $m$ are locally available at the latter component. 
+
+
+
+
+
+
+
+\section{Applications}
+\label{sec:applications}
+
+
+
+
+We discuss two applications in the context of quantum information, which are based on the results from the previous section: sharing a quantum state among multiple parties, and establishing entanglement between two parties. \cref{fig:possible_graphs} shows these protocols on example graphs. The protocols assume a network graph that is bipartite and connected, but couplings $w_{jk}$ could be brought down to zero to break the connectedness. In order to check the correctness of the protocols, one should check two aspects. Firstly, a system initialized with total spin $s$ should always have a unique ground state in $\mathcal{H}_{s,m}$, which we enforce by requiring that the system is spin-$s$ compatible at all times. Secondly, the initial and final states should be well understood such that they provide the utility that we claim. We illustrate situations in which our requirements are not fulfilled in \cref{fig:possible_problems}.
+
+\begin{figure}
+\centering
+\includegraphics[width=.95\textwidth]{img_manuscript/applications_column.pdf} 
+\caption{Example of a state transfer and an entanglement distribution protocol, where we assume each site holds a particle with the same spin $s$. For readability, we label parties $p_i$ with capital letters. In the top panel, A initializes the system into a resource state encoding its original spin state, which is later obtained at C. Note that all indicated parties can be valid receivers. In the bottom panel, the system is initialized in a global singlet, after which A and B disconnect to obtain singlet entanglement between their sites. At various stages in these protocols, the network must obey requirements such as (from top to bottom) all connected components except for the disconnected parties have $g=0$, all parties must be connected, and throughout the whole protocol, the graph must remain spin-$s$ compatible. }
+\label{fig:possible_graphs}
+\end{figure}
+
+\subsection{Sharing a quantum state between multiple parties, such that any party can access the state}
+Consider a setup where $\ell$ cooperating parties $p_1, p_2, \ldots, p_\ell$ hold subsystems of a graph $G$. In case one party $p_i$ experiences an emergency, it needs access to the state $\ket{\psi} = \sum_{m=-s}^s \psi_m \ket{m} \in \mathbb{C}^{2s+1}$, preferably without requiring any activity of the other parties. Because cloning $\ket{\psi}$ is generally impossible, the best option is to find a way to share the state between the parties. A protocol that offers a solution is as follows:
+
+
+\begin{itemize}
+\item Initialization: Without loss of generality, assume initially $p_1$ holds $\ket{\psi}$ locally. The system must be configured such that $p_1$ is disconnected from the rest of the system, and $p_1$ fully determines the ground state of the full system. $p_1$ can now initialize its subsystem in the state $\ket{\psi'} = \sum_{m=-s}^s \psi_m \ket{s,0,m}$. 
+\item Forming a resource state: $p_1$ connects to the system, and any other connections must be made such that all parties are on the same connected component. The state $\ket{\psi'}$ is now encoded in the spin-$s$ ground subspace of this component. 
+\item Finalization: To access the information, any party ${p_i}$ can adiabatically disconnect, in such a way that it localizes the ground subspace information at its subsystem.
+\end{itemize}
+This protocol generalizes the transfer of a quantum state between two parties located at the ends of a chain, such as considered in Refs. \cite{Oh2013,Agundez2017}.
+
+Let us discuss the requirements for graphs that allow such protocols. Firstly, to localize the ground state information at a single subsystem, the most general requirement we found is that any disconnected party $p_i$ should have $|g_i| = s$ while all other connected components have $g=0$. Then from this, we derive that all parties $p_i$ must have the same spin imbalance $g_i$ (with the same sign), which follows because $G / \{ p_i \}$ should have $g=0$ for any party $p_i$. The same holds for the resource state, where the component containing the parties must have spin imbalance equal to $g_i$ while the rest of the components have $g=0$. 
+
+In between the initialization, the resource state configuration, and the finalization, the only constraint is that spin-$s$ compatibility is preserved, which is a less stringent requirement. For example, there could be more than a single connected component with $g\neq 0$ as long as $N_{|g_1|, |g_2|, \ldots }^s = 1$.  
+
+An interesting situation occurs when one of the parties holds a subsystem which is not connected. In that case,  transfer is still possible as long as $N_{|g_1|, |g_2|, \ldots }^s = 1$ for a party whose connected components have spin imbalances $g_1, g_2, \ldots$. If there are two connected components, this generally holds for any $|g_1 - g_2| \leq s \leq g_1 + g_2$. For three or more connected components, this condition can only be met when $\sum_i |g_i| = s$. Moreover, the combined spin imbalance must match the imbalance of the other parties, hence $|\sum_i g_i | = s$. We conclude that for more than two components, parties may have disconnected subsystems as long as all connected components have spin imbalances with the same sign (plus any number of $g=0$ components), which properly add up to $s$. 
+
+
+
+
+
+\subsection{Distributing maximally entangled singlet states}
+In this protocol, two parties $p_1$ and $p_2$ both hold subsystems on a graph $G$. The ground subspaces of both parties are brought into the maximally entangled singlet state. 
+
+\begin{enumerate}
+\item Initialization: The system must be in the unique ground state which has $s=0$. 
+\item Finalization: Both parties are disconnected from the system, in such a way that the final state is a singlet on $G / \{p_1, p_2 \}$, in tensor product with a singlet on $\{p_1, p_2\}$. 
+\end{enumerate}
+
+Again, we turn to analyzing the requirements for allowed graphs. Firstly, to form a singlet state together, the parties $p_1$ and $p_2$ must have $|g_1| = |g_2|$. Because also  $G / \{p_1, p_2 \}$ should have $g=0$ and $G$ must have $g=0$, if follows that $g_1 = -g_2$. 
+
+In principle, the initial state allows any configuration with a unique spin-$0$ ground state. However, if $p_1$ and $p_2$ are restricted to controlling only the couplings directly surrounding their own subsystem, then the system must start such that the two parties are connected. For the final state, in order to be sure that the parties are not entangled with the rest of the system, the most general constraint we are aware of is that $G / \{ p_1, p_2 \}$ must consist only of components with $g=0$. 
+
+The precise trajectory of the coupling $w_{jk}$ is irrelevant as long as the system remains spin-$0$ compatible.  Also, after the protocol is finished, individual connected components that remain can again be used as a starting stage for the same protocol. Notice that distributing entanglement between more than two parties in a single step is generally more complicated, because for multiple parties the spin-$0$ compatibility is easily broken.
+
+A closely related idea for entanglement generation was presented earlier in \cite{CamposVenuti2006}, where spins $p_1$ and $p_2$ sit at ends of a linear spin-$\frac{1}{2}$ chain, but $p_1$, $p_2$ are coupled more weakly to their neighbors than the spins in the bulk of the chain. By making this coupling ratio more extreme, the ground state was found to exhibit increasingly strong long-distance entanglement between the outermost spins. A later follow-up paper, Ref. \cite{CamposVenuti2007}, investigated the usefulness of these outermost qubits in low-temperature chains for the teleportation protocol. Our results extend these earlier findings of long-distance entanglement to more general spin networks, and place them in a quantum control perspective. 
+
+
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{img_manuscript/applications_example_problems_half.pdf} 
+\caption{Example issues that occur when graph requirements are not fulfilled. In the top row, party A cannot be disconnected in such a way that all other components have $g=0$, eventually breaking spin-$s$ compatibility when the dotted couplings are set to $0$. In the bottom row, the networks are such that A and B could in principle complete both protocols successfully, but during each protocol, disconnections are made such that spin-$s$ compatibility is broken. In each of these cases, the ground state of the relevant $\mathcal{H}_{s,m}$ could become degenerate. }
+\label{fig:possible_problems}
+\end{figure}
+
+\section{Errors and scaling}
+\label{sec:errors}
+So far, we dealt with the uniqueness of the ground state to prove that an adiabatic protocol is viable at \emph{some} time scale, to which we remained agnostic. Moreover, we assumed perfectly sterile conditions: zero temperature and no interactions beyond those of \cref{eqn:heisenberg}. For real-world implementations, the actual scaling of protocol time and error susceptibility as a function of the number of sites $N$ would be of great importance, yet unfortunately, we are unable to give an in-depth and fully general characterization. Rather, this section collects known results related to this context, and numerically analyses the timing and errors in small systems.
+
+Adiabatic processes are typically analyzed from the perspective of the energy gap $\Delta$, where the duration of the protocol $T$ is taken to scale as $T \propto \Delta^{-2}$ \cite{Childs2001}. The Haldane conjecture states that linear Heisenberg chains consisting of particles with half-integer spin exhibit a $\Delta \propto 1/N$ gap, whereas integer spin particles feature a unique ground state with a constant gap \cite{Affleck1986}. However, care has to be taken that these results assume periodic boundary conditions which are not readily compatible with our protocols. For spin-$1$ particles, open boundary conditions give rise to four low-lying states separated from the rest of the spectrum by a constant gap. These lower states live in different spaces $\mathcal{H}_{s,m}$, and their energies grow exponentially close in the thermodynamic limit \cite{Kennedy1990}.
+
+The nature of the errors that arise during the protocol then depend on whether the system is truly $SU(2)$-symmetric: if it is, then only the gaps within the relevant $\mathcal{H}_{s,m}$ are of any importance, and a system will not leave this subspace. However, to our best knowledge, all realistic systems described by \cref{eqn:heisenberg} consist of spin particles whose magnetic moment interacts with magnetic fields $\vec{B}$, leading to interactions of the form $H = \sum_j \vec{B}_j \cdot \hat{S}_j$. Such fields break the $SU(2)$ symmetry, such that $\mathcal{H}_{s,m}$ may no longer be conserved. However, if $\vec{B}_j$ is a constant function of $j$, then the protocols could still work, as we discuss in section \ref{sec:implementations}. 
+
+Nonetheless, many results indicate that just the gap by itself does not necessarily reflect the viability of adiabatic protocols \cite{Polkovnikov2008, Lychkovskiy2017}. Therefore, explicit numerical simulations of the full protocol appear to be the most informative. Such simulations have been performed for linear chains of spin-1/2 particles \cite{Oh2013,Agundez2017}, and for entanglement distribution on a spin-1/2 chain with the purpose of teleportation \cite{CamposVenuti2007}. The latter work also calculates the gap in their system for lengths of up to one hundred. In Refs. \cite{Eckert2007,Farooq2015}, closely related protocols are simulated. 
+
+Another important issue arises due to the fragility of Lieb and Mattis' statement that the ground state has definite total spin $s = |\max s_{V_1} - \max s_{V_2}|$, which is a fundamental building block of our protocols. Inhomogeneous magnetic fields of the form $B (\hat{S}^z_{V_1} - \hat{S}^z_{V_2})$ with amplitude $B = O(1/N)$ can cause the ground state to have significant amplitude spread out over various spin sectors \cite{Kaiser1989, vanWezel2007}. Moreover, frustrated interactions such as $\hat{S} \cdot \hat{S}$ coupling between next-nearest neighbors may break the result of Lieb and Mattis. 
+
+We conclude that many threats can be identified, yet a general understanding of how these affect an adiabatic protocol is lacking. To give at least some insight in the practical performance of our protocols, we resort to numerical simulation. We select a concrete system that showcases our main contributions by allowing multi-party transfer and non-linear graph layout, namely qubits on a star-shaped graph. 
+
+
+\section{Numerics on star graphs}
+We consider systems consisting of qubits ($s_j = \frac{1}{2}$) arranged in the shape of a star, where a center qubit is connected to $M$ arms each consisting of a linear chain of $K$ qubits, as depicted in \cref{fig:elevels}. The total number of qubits is $KM+1$. Note that such graphs reduce to a linear chain for $M=1,2$. 
+
+\begin{figure}
+\centering
+\includegraphics[width=.85\textwidth]{img_manuscript/pltProtocolAndStar_larger.pdf} 
+\caption{For the adiabatic transfer protocol in a system of size $M=3$ and $K=2$, we display a sketch of the star-shaped system, the driving functions $f$ and $g$, and the size of the energy gap $\Delta$ as a function of time. On the right, all energy levels as a function of time are displayed. All units are normalized with respect to the protocol time $T$ and the coupling strength $J$.}
+\label{fig:elevels}
+\end{figure}
+
+In the case of state transfer, the arm length $K$ must be even, allowing the center qubit to qualify as sender or receiver, as well as all qubits that are an even number of sites away from the center. We locate our sender $p_1$ at the center, and place receiver $p_2$ at the very end of the first arm. All couplings $w_{jk}$ are set to uniform strength $J$, except for the couplings connected to $p_1$ or $p_2$, which we give time-dependent amplitudes $f(t)$ and $g(t)$ respectively. We choose
+\begin{align}
+%
+f(t) = J \sin \left( \frac{ \pi t }{2 T} \right), \quad g(t) = J \cos \left( \frac{ \pi t }{2 T} \right)
+\label{eqn:fg}
+\end{align}
+where $T$ is the total duration of the protocol. 
+
+
+\begin{figure}
+\centering
+\includegraphics[width=.95\textwidth]{img_manuscript/TransferFidsAll2_larger.pdf} 
+\caption{Transfer error $\mathcal{E}$, for various choices of $T$ and $M$, for systems with arm length $K=2$. For the small systems that we study, the fidelity seems to quickly converge to errors of less than $1 \%$, indicated by the black zig-zag line, for protocol times just slightly larger than the intrinsic time scale $1/J$ of the system. On the right, cutouts of the main plot are displayed for fixed times (top) and fixed number of arms (bottom) on a log-log scale. }
+\label{fig:TransferFid}
+\end{figure}
+
+
+Having defined our time-dependent Hamiltonian, we numerically solve Schr\"{o}dinger's equation to find the unitary time-propagation $U_{T}$. As initial state we choose $\ket{\psi(t=0)} = \ket{\psi_0}_{p_1} \otimes \ket{0,0,0}_{V / p_1}$, where $\ket{0,0,0}$ is the global ground state with properties $s=0, m=0$. The state $\ket{\psi_0}_{p_1}$ is the state initialized by sender $p_1$, the choice of which does not influence the protocol's fidelity at this point, thanks to global $SU(2)$ symmetry. We then define the transfer error as 
+\begin{align*}
+&\mathcal{E} = \ 1 - \bra{\psi_0} \quad \text{tr}_{V / p_2 } \Big( \ket{\psi(T)} \bra{\psi(T)} \Big) \quad  \ket{\psi_0} \\
+&\text{where } \ket{ \psi(T) } = \ U_T \ket{\psi(0)}.
+\end{align*}
+Here, $\text{tr}_{V / p_2 }( \cdot )$ denotes the partial trace of the whole system except for site $p_2$. \cref{fig:elevels} depicts the driving functions $f$ and $g$, and the movement of the energy levels and the gap during the protocol.
+
+\cref{fig:TransferFid} shows our results for the transfer fidelity for various protocol times $T$ and number of arms $M$, with arm length fixed to $K=2$. For these small system sizes, very low error rates of less than $1 \%$ are readily obtained without further optimization of the protocol. Still, scaling up the system size by increasing $M$ clearly requires longer protocol times to achieve the same low errors. We leave the precise scaling of transfer fidelity for larger systems, possibly using optimizations beyond the adiabatic approximation, as an open question. 
+
+
+
+
+
+\subsection{A numerical example where assumptions are violated}
+A minimal example of a transfer protocol that does not match our requirements is displayed in \cref{fig:elevelsfail}. The bottom-left panel shows a graph in which $p_1$ can disconnect while leaving all other components in $g=0$, but $p_2$ cannot. Choosing spin-$1/2$ particles ($s_j = s = 1/2$) and the same time-dependent functions $f$ and $g$ for the couplings incident to $p_1$ and $p_2$ as before (\cref{eqn:fg}), we calculate the energy levels over time, and the protocol error as a function of total protocol time $T$. Because the spin-$s$ compatibility is broken at the point $t=T$, there is no longer a guaranteed energy gap within $\mathcal{H}_{s,m}$, and we indeed find that relevant gap closes precisely at time $T$. This has a devastating effect on the transfer error, which barely drops below $0.5$, the latter corresponding to uniformly random outcomes at $p_2$. Importantly, the transfer error does not asymptotically decay to $0$ as a function of $T$, a generic indicator that adiabatic transport fails. 
+
+\begin{figure}
+\centering
+\includegraphics[width=.87\textwidth]{img_manuscript/pltProtocolFail_larger.pdf} 
+\caption{An example of a transfer protocol in which our requirements are violated. The left panel displays the graph layout and the time-dependence of the couplings connected to $p_1$ and $p_2$. Because $p_2$ is unable to disconnect while preserving spin-$s$ compatibility, there is a possibility that the relevant energy gap closes, which we indeed find here. As a result, the transfer error does not asymptotically decay to 0 as a function of $T$.}
+\label{fig:elevelsfail}
+\end{figure}
+
+
+
+
+
+\section{Experimental implementations}
+\label{sec:implementations}
+
+The Heisenberg coupling of \cref{eqn:heisenberg} can be approximated by systems forming a Fermi-Hubbard model in a regime of half-filling and strong on-site repulsion. Experimental platforms which have been proposed for quantum information processing in such regimes include ultracold atoms trapped in optical potentials \cite{Murmann2015,Mazurenko2017} and electrons trapped in quantum dots \cite{Loss1998,Hanson2007}. Selectively varying the coupling between ultracold atoms requires delicate control over the trapping potential. In quantum dots, individual coupling strengths $w_{jk}$ are directly controlled using electronic gate voltages \cite{Hensgens2017}, making them a promising candidate for experimental implementation of our protocols. 
+
+Typical experiments will deal with a global magnetic field, adding a term of the form $\vec{B} \cdot \sum_{j \in V} \hat{S}_j$ to the Hamiltonian. A field $\vec{B}$ oriented perfectly along the $z$-axis commutes with total spin operators $\Stot$ and $\Stot^z$, hence it does not change our conclusions on conservation of $\mathcal{H}_{s,m}$ and the uniqueness of the ground state within these spaces. However, a relative dynamical phase between subspaces that differ in $m$ has to be accounted for. Moreover, it is no longer guaranteed that the global ground state is in spin sector $s=|g|$. More problematic could be magnetic noise which breaks the SU(2) symmetry. Minimizing the influence of such fields would be a major experimental challenge, and would form an interesting topic of further theoretical research. 
+
+
+\section{Discussion and outlook}
+\label{sec:discussion}
+Given a physical system described by \cref{eqn:heisenberg}, there would be multiple ways to transfer quantum information, primarily through a quench \cite{Bose2007}, by a sequence of swapping operations, or by using the adiabatic steps that we propose. Our adiabatic approach has the disadvantage of having stringent cooling requirements and inherently slow dynamics. Moreover, it is unclear how the protocol time and error scale for large systems. On the other hand, adiabatic protocols have an advantage when it comes to control requirements, being relatively robust to decoherence and control errors \cite{Farooq2015,Childs2001}, and requiring only a small number of couplings $w_{jk}$ to be adjustable as a function of time. The lower complexity of control makes such protocols worthwhile candidates for experiments on near-term quantum devices. We also note that our protocol could form a building block for an atomic swap operation that is repeated many times, allowing a trade-off between control complexity and time complexity, as the time of swap operations scales linearly with transfer distance. 
+
+Throughout this work, we remained agnostic with regards to the initialization of the ground state. Preparation can in principle be done by cooling, but having a system capable of adiabatically changing its couplings, it could be preferable to start from a simple initial state which has an adiabatic connection to the required ground state. Such a protocol was addressed in Ref. \cite{Farooq2015} for a spin-1 chain: start with a chain of sites with only the \emph{odd} couplings active, such that the ground state is formed by two-site singlets. One can then adiabatically ramp up the even couplings to obtain the ground state of the fully coupled chain. Such initial states are either easier to cool, because their gap does not scale with the system size, or they may be prepared from a computational basis state using a quantum circuit of constant depth. Using our results, this initialization protocol readily extends to more general spin networks and any total spin $s$, with as only restriction that the system must remain spin-$s$ compatible during the process.
+
+
+From a practical perspective, we note that many optimizations can be made to our protocol, most notably by circumventing diabatic errors through so-called shortcuts to adiabaticity \cite{delCampo2019}. For example, Ref.  \cite{Agundez2017} studies such improvements for precisely our protocol on a linear chain. We would be very interested to see future work generalize similar results to different graph structures.
+
+On the theoretical side, we note that we have by no means exploited all the symmetries of Heisenberg systems yet. For example, we showed that \emph{each} $\mathcal{H}_{s,m}$ has a unique ground state, yet our protocols must stick to the global ground state due to our connection/disconnection procedure. Moreover, we proved that our requirements for a unique ground state are sufficient, but not that they are necessary; we expect that further generalizations are possible here, extending the applicability of adiabatic protocols. In a similar spirit, one might exploit ferromagnetic variations of the Lieb-Mattis theorem \cite{Nachtergaele2005} if one circumvents problems arising from addition of spin quantum numbers. We believe that further examination of these open ends could lead to a better theoretical understanding of spin chains, and novel applications. 
+

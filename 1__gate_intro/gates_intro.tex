@@ -1,0 +1,330 @@
+%
+\section{Introduction}
+\label{sec:gatesintrointro}
+What constitutes a true multiqubit gate? Surely a unitary operation like $U= X \otimes Z$ should not be considered as such: even though it acts on two qubits, the operation merely consists of two local single-qubit gates in parallel, and the qubits could even be spacelike separated throughout the process. Although it is not quite well-defined what we mean with a proper multiqubit gate, we can at least set two requirements:
+%
+\begin{enumerate}
+\item The operation creates some form of $N$-partite entanglement, hence it can not be written in a tensor product form. 
+\item The operation must be `understandable', either for a computer-based compiler (i.e. there must be an efficient description of what the gate does), or, even better, easily understandable for humans.
+\end{enumerate}
+%
+The prototypical example is the \texttt{Toffoli}$_N$ or \texttt{C}$^{N-1}$\texttt{NOT} gate on $N$ qubits, which performs a bitflip on the $N$th qubit if and only if the other $N-1$ qubits are in the state $\ket{1}$. Spelled out as a matrix in the computational basis, it is written
+\begin{align}
+\texttt{Toffoli}_3 =
+\begin{pmatrix}
+ \one & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+ 0 & \one & 0 & 0 & 0 & 0 & 0 & 0 \\
+ 0 & 0 & \one & 0 & 0 & 0 & 0 & 0 \\
+ 0 & 0 & 0 & \one & 0 & 0 & 0 & 0 \\
+ 0 & 0 & 0 & 0 & \one & 0 & 0 & 0 \\
+ 0 & 0 & 0 & 0 & 0 & \one & 0 & 0 \\
+ 0 & 0 & 0 & 0 & 0 & 0 & 0 & \one \\
+ 0 & 0 & 0 & 0 & 0 & 0 & \one & 0
+\end{pmatrix}.
+\label{eqn:toffoli3}
+\end{align}
+Note that other multiple-controlled single qubit gates, such as the (double-)controlled-$Z$, can easily be obtained from the \texttt{Toffoli} gate through local basis transformations. The form of \cref{eqn:toffoli3} is particularly convenient: the gate acts trivially on most quantum states, except for a single two-dimensional subspace in which a $\pi$-rotation takes place. This property makes the gate both easily understandable for humans, but also highly non-local. We will elaborate on this highly selective property throughout this chapter.
+
+\paragraph{} When implemented on actual hardware, multiqubit gates are generally decomposed into the set of available single- and two-qubit gates. As two-qubit gates are typically more prone to errors, focus is on counting the number of two-qubit gates required for a certain circuit. Moreover, the \texttt{CNOT} is canonically taken as the only available two-qubit gate, calling for the \texttt{CNOT}-count as a figure of merit. Decomposing the \texttt{Toffoli}$_N$ into the shortest possible circuit of operations taken from some set of $1$- and $2$-qubit gates has become a formidable scientific challenge. The rules of this game can be interpreted in various ways: Can one use any two-qubit gate, or does it have to be a \texttt{CNOT}? Can ancillary qubits be used? Are we counting the \emph{depth} of the circuit, or the number of two-qubit gates, or the total number of all gates?
+For example, in their widely adopted textbook, Nielsen and Chuang \cite{Nielsen2010} ask\footnote{See Research Problem 4.4.} how many gates from various gate sets are needed to construct a \texttt{Toffoli}$_N$. It is now known that the \texttt{Toffoli}$_3$ requires as many as 5 freely chosen two-qubit gates, or 6 \texttt{CNOT}s \cite{Yu2013}. 
+
+For larger $N$, the required number of basic operations or ancilla qubits grows steeply. The \texttt{Toffoli}$_N$ can be implemented with a circuit of \emph{depth} $O(\log(N))$, requiring $O(N)$ ancilla bits. If no ancillas may be used, the number of \texttt{CNOT}s is lower bounded at $2N$, although the be best known implementations require a quadratic number of \texttt{CNOT}s \cite{Shende2009}. The size of these circuits has been prohibitive in scaling up quantum algorithms on current quantum computer prototypes: even though various systems with 5-20 qubits are available \cite{Roushan2017,Otterbach2017,Landsman2019,Aron2019}, the largest multiple control gate ever performed is, to our best knowledge, the \texttt{Toffoli}$_4$ \cite{Figgatt2017}. 
+
+Circumventing this decomposition has also attracted significant attention. Ref. \cite{Ralph2007} considers a shorter circuit for the \texttt{Toffoli}$_3$ by requiring one \emph{qutrit}, and Ref. \cite{Fedorov2012} implements a similar scheme on superconducting transmon qubits. Refs. \cite{Isenhower2011,Shi2018} propose a \texttt{Toffoli}$_N$ by exploiting the Rydberg blockade, and Ref. \cite{Gullans2019} proposes a drivently driven \texttt{Toffoli}$_3$ for spin qubits. In the following, we chase the same goal, by using resonant driving in a strongly coupled quantum system to create a gate similar to the \texttt{Toffoli}$_N$.
+
+
+\subsection{Resonant driving as a control technique}
+Resonant driving techniques are well-known in atomic physics, where they are used to populate specific orbitals \cite{Griffiths2005, Wollenhaupt2016}, and in experimental quantum information processing, where they are exploited to form quantum gates on one or two qubits \cite{Cory1997,Garcia-Ripoll2003,Gambetta2017,Zajac2018}. When a pair of eigenstates with a unique energy gap is resonantly driven for an appropriate amount of time, the unitary time-evolution operator, in the asymptotic limit of increasingly weak driving, approaches the form
+\begin{align}
+\iswap_{t_1, t_2} = \begin{pmatrix}
+\mathds{1} & 	& 	&		& \\
+	& 0 & \hdots & -i e^{i \phi}	&	\\
+	& \vdots	& \mathds{1} & \vdots &\\
+	& -i e^{-i \phi} &  \hdots & 0 & \\
+	&	& &  	& \mathds{1}
+\end{pmatrix}.
+\label{eqn:udrive}
+\end{align}
+Here, all diagonal entries are 1, except in the subspace spanned by the resonant states, which we denote by $t_1$ and $t_2$. The phase $\phi$ corresponds to the phase of the driving field. We observe that this operation is very similar to \texttt{Toffoli}$_N$, and it features the same favorable properties, namely that it is both easily understandable for humans and highly non-local. 
+
+Note that it is generally highly nontrivial to form gates of the type $\iswap_{t_1, t_2}$ using a local Hamiltonian. They could in principle be generated by a time-independent Hamiltonian of the form $H = \ket{t_1}\bra{t_2} + h.c.$, but such interactions, which act only on many-particle states $t_1$ and $t_2$ but not any others, are typically highly nonlocal, and hence are never encountered in nature \cite{Preskill2013}. When restricting to realistic $2$-local Hamiltonians, in which each term is allowed to act non-trivially on at most two qubits, time-dependent control fields are required. Our goal is to cleverly engineer $2$-local Hamiltonians whose time evolution swaps just 2 out of $2^N$ states and leaves all other states put, without resorting to discrete gate decompositions. To do so, we employ systems of the form
+%
+\begin{align*}
+H(t) = H_\text{bg} + \A' \cos(\omega t + \phi) H_\text{\text{drive}},  
+\end{align*}
+%
+where $H_\text{bg}$ is a background Hamiltonian whose eigenstates are known, and $H_\text{\text{drive}}$ is some local driving field which incites a transition between two eigenstates of $H_\text{bg}$, which we will call $\ket{t_1}_{H_\text{bg}}$ and $\ket{t_2}_{H_\text{bg}}$\footnote{Recall that we use subscripts below kets to indicate the basis we consider.}. 
+If these eigenstates have a unique energy gap, the resulting time evolution $U_\text{drive}$ can be made to look as in \cref{eqn:udrive}. 
+
+Note that the resulting $U_\text{drive}$ has this special form in the \emph{eigenbasis} of $H_\text{bg}$. For further quantum information processing, we propose an operation which maps each computational basis vector to a unique eigenstate, which we call the \emph{eigengate} $U_\text{eg}$. The complete protocol is then described by 
+%
+\begin{align*}
+\iswap_{t_1,t_2} \approx U_\text{eg}^\dagger U_\text{drive} U_\text{eg}.
+\end{align*}
+%
+An implementation of this protocol would require the following ingredients:
+  \begin{itemize}
+  \item A constantly applied background Hamiltonian $H_{\text{bg}}$ which has a unique energy gap $\omega$ between two eigenstates $\ket{t_1}_{H_\text{bg}}$ and $\ket{t_2}_{H_\text{bg}}$. 
+  \item A driving field $H_{\text{drive}}$ which couples the states $\ket{t_1}_{H_\text{bg}}$ and $\ket{t_2}_{H_\text{bg}}$, whose amplitude can be made oscillatory at the right frequency $\omega$.
+  \item An operation which maps (any) two computational basis states, call them $\ket{t_1}$ and $\ket{t_2}$, to energy eigenstates $\ket{t_1}_{H_\text{bg}}$ and $\ket{t_2}_{H_\text{bg}}$ respectively. We also need the inverse of this operation. 
+    \item An efficient method to keep track of the dynamical phases due to $H_{\text{bg}}$. 
+  \end{itemize}
+Throughout this part, we will elaborate on these four requirements, and treat specific examples in which the proposed protocol is shown to work.
+
+The resulting operation could find applications in noisy intermediate-scale quantum computers \cite{Preskill2018}, where decoherence prohibits long gate sequences, but evolution by engineered Hamiltonians might be natively available. We find that there is a trade-off between gate time and fidelity, where the error $\mathcal{E} \propto t_d^{-2}$ scales as the inverse-square of the driving duration $t_d$. Moreover, as the number of involved qubits increases, the performance of our gate may decrease. Therefore, we will compare our proposals to the scaling of conventional gate decompositions. 
+ 
+  
+
+\subsection{Related work}
+In 2010, two independent groups \cite{Burgarth2010, Kay2010} described a result that similarly exploits resonant driving in a many-body system to construct quantum gates. They considered an interacting spin chain of which only the first one or two sites can be controlled, and prove that universal operations over all states are possible. The scope of these papers, achieving single- and two-qubit gates with limited control, is very different from our goal, which is the creation of an unconventional multiqubit operation on a system with much more generous controllability. Moreover, both earlier papers focus mostly on proof of existence, and do not mention concrete examples of systems which would allow their protocol. In this part, we present experimentally feasible examples which we simulate numerically. 
+
+An experiment by Senko et al. \cite{Senko2014} applied resonant driving on a many-body system, very similar to our proposal. The experiment involved trapped ions that collectively simulate an Ising model (see \cref{sec:Ising}), acted on by an oscillatory driving field. By starting in an eigenstate and measuring the system after driving at various oscillation frequencies, the energy gaps between certain states could be inferred. The experiment was presented as a method to perform \emph{coherent} spectroscopy, allowing the accuracy of the Ising model to be tested, which sets it apart from our approach for constructing quantum gates. Still, the techniques used are similar. The experiment was mostly a proof-of-concept, but the results are a good indication that the resonant transitions presented in this part are within the possibilities of near-term quantum computers. 
+
+The most obvious competitor of our protocol is conventional compiling of any quantum operation into a universal set of single- and two-qubit gates. Extensive research efforts have greatly optimized compiling methods, and in the asymptotics of many qubits, compiling approach becomes increasingly favorable compared to our proposal. For a recent overview, see Ref. \cite{Chong2017}. We present our results not as an alternative to compiling, but rather as a creative twist to the fields of condensed matter and quantum control, which might find applications on specialized near-term devices. We also present our methods, such as the eigengate presented in \cref{sec:eg}, as tools that may find applications elsewhere. 
+
+
+
+
+\section{Mapping the computational basis to the eigenbasis}
+\label{sec:eg}
+
+
+
+\subsection{Eigengates from quenches}
+
+Let $A$ and $B$ be Hermitean operators (or Hamiltonians). We call $U_\text{\text{eg}}$ an \textbf{eigengate} between $A$ and $B$ if it maps every eigenstate of $A$ to an eigenstate of $B$. Such eigengates can be implemented by \textit{quenching} (suddenly applying) a third Hamiltonian $H$ which satisfies
+\begin{align}
+e^{-i H \frac{\pi}{2}}  A e^{i H \frac{\pi}{2}} = B.
+\label{eqn:eg_heisenberg}
+\end{align}
+It is not clear which tuples $(A,B,H)$ satisfy \cref{eqn:eg_heisenberg} in general, but we claim the following sufficient condition:
+\begin{align}
+[H,A] &=  i B \quad \text{ and } \quad [H,B] =  -i A.
+\label{eqn:alt_comm}
+\end{align}
+Note that one can freely rescale $A$, $B$ and $H$ (together with the rotation angle $\pi/2$), as this does not change the eigenstates, hence pertaining the same eigengate. To prove our claim, we first recall the Hadamard Lemma, 
+\begin{align}
+e^{-i H t} A e^{i H t} &= \sum_{n=0}^{\infty} \frac{(-it)^n}{n!} (\text{ad}_H)^n A     \label{eqn:hadlemma}  \\
+\text{ad}_H A &:= [H, A]  \nonumber
+\end{align}
+and plug \cref{eqn:alt_comm} into \cref{eqn:hadlemma}: 
+\begin{align*}
+e^{-i H t}  A e^{i H t} &= A + (-it) (iB) + \frac{(-it)^2}{2!} A + \frac{(-it)^3}{3!} (iB) + \frac{(-it)^4}{4!} A + ...  \\
+&= \sum_{k = 0}^\infty \frac{(-it)^{2k}}{2k!} A 
++  \sum_{k = 0}^\infty \frac{(-it)^{2k+1}}{(2k+1)!}i B \\
+&= \cos( t ) A + \sin( t ) B .
+\end{align*}
+%
+Hence, the operator $A$ evolves to $B$ in the Heisenberg-picture if we apply $H$ for a time $t= \frac{\pi}{2}$. We graphically depict such rotations in \cref{fig:eg_quench_rotation}. Recall that subscripts of kets denote the basis in which the vector is described. Then, for every eigenvector $\ket{j}_A$ of $A$, we may define 
+\begin{align*}
+\ket{j}_B = U_\text{eg} \ket{j}_A
+\end{align*}
+where $U_\text{eg} = \exp( -i H \frac{\pi}{2} )$ is an eigengate from $A$ to $B$. Unitaries are isospectral mappings, preserving the spectrum of Hermitean operators, hence for all $j$, if $A \ket{j}_A = \lambda_j \ket{j}_A$, then $B \ket{j}_B = \lambda_j \ket{j}_B$. Examples of valid $(A,B,H)$ tuples include the Pauli matrices $(\X, \Y, \Z)$, and $(L_0^\alpha, L_1^\alpha, H_\text{P} )$ which we will discuss in \cref{chap:pc} on Polychronakos' model. 
+
+\begin{figure}
+\centering
+\def\svgwidth{.28\linewidth}
+\input{img/a-b-plane-tex.pdf_tex}
+\caption{An eigengate generated by $H$ rotates operator $A$ between $B$, $-A$, $-B$ and back into $A$. Note that consecutive application of two eigengates inverts the spectrum of $A$ or $B$. }
+\label{fig:eg_quench_rotation}
+\end{figure}
+
+
+There is some leftover symmetry $H \rightarrow H+G$ for any $G$ such that $[G,A] = [G,B]=0$. In other words, within each subspace spanned by eigenvectors of $A$ with the same eigenvalue, the operator $U_\text{eg}$ may cause an arbitrary unitary rotation which we cannot track using the method presented here. 
+
+\subsection{Eigengates from adiabatic evolution}
+Another method to turn eigenstates of $A$ into eigenstates of $B$ is by adiabatic evolution. For $t \in [0, \pi/2]$, we consider the adiabatic Hamiltonian 
+\begin{align}
+H_\text{adiabatic} = \cos( t ) A + \sin( t) B.
+\label{eqn:adiabatic}
+\end{align}
+Because the LHS of \cref{eqn:hadlemma} shows an isospectral transformation of $A$, the eigenvalues of \cref{eqn:adiabatic} remain the same at all times. Assuming the relevant units of energy are large compared to the units of time, the total time-evolution converges to the form 
+\begin{align*}
+U_\text{eg,adiabatic} &= \mathcal{T} \exp \left(-i \int_0^{\frac{\pi}{2}} H_\text{adiabatic}(t) dt \right) \\
+&= \underbrace{ \exp \left( -i G \frac{\pi}{2} \right)  }_\text{Acts only within degenerate subspaces}  \underbrace{ \exp \left( -i H \frac{\pi}{2} \right)  }_{\text{Eigengate} }  \underbrace{ \exp \left( -i A \frac{\pi}{2} \right)  }_{\text{Dynamical phase} },
+\end{align*}
+where the form of $G$ in the last equation is unknown, but limited to act nontrivially only within each subspace of fixed eigenvalue. On individual eigenstates of $A$, the adiabatic evolution operator acts as
+\begin{align*}
+U_\text{eg,adiabatic} \ket{j}_A = \exp \left(-i G \frac{\pi}{2} \right) \exp \left( -i \lambda_j \frac{\pi}{2} \right) \ket{j}_B.
+\end{align*}
+
+\subsection{Eigengates for resonantly driven transitions}
+Our goal is to arrive at a quantum gate that exchanges exactly two states in the \emph{computational basis} by driving a unique transition in some background Hamiltonian's \emph{eigenbasis}. This is where eigengates come in. 
+
+We require $A$ to be \textit{any} Hamiltonian which is diagonal in the computational basis, while $B$ is the background Hamiltonian in which the driving takes place. In that case, the eigengate $U_\text{eg}$ between $A$ and $B$ maps computational states to eigenstates. Using states in the eigenbasis of $B$, we may selectively exchange eigenstates using resonant driving. Finally, an inverse eigengate (or equivalently, a $\frac{3 \pi}{2}$ rotation by $H$) then maps back to the computational basis, giving the desired result. 
+
+Although sufficient and highly convenient, the eigengate is not \emph{necessary} for this protocol: any unitary map that sends two computational basis states to the transitioning states would be sufficient. 
+
+As an interesting aside, the eigengate's feature to invert the energy spectrum when employed twice, has applications in perfect state transfer. In particular, whenever $A$ is a sum of single-qubit terms such that an excitation at qubit $i$ has energy opposite to an excitation at qubit $j$, then $(U_\text{eg})^2$ exchanges the state of qubits $i$ and $j$. This assumes conservation of the number of excitations, and the uniqueness of the relevant energies. As an example, in \cref{chap:krawtchouk} will later see that the mirror inversion dynamics of the Krawtchouk chain correspond precisely to $(U_\text{eg})^2$ for that system \cite{Christandl2004,Groenland2018}. 
+
+
+
+
+\section{Resonant driving}
+\label{sec:resdrive}
+This section studies the effect of resonant driving on many-body systems. We now consider a Hamiltonian of the form 
+\begin{align}
+H(t) = H_\text{bg} + \A' \cos(\omega t + \phi) H_\text{\text{drive}}  
+\label{eqn:generaldriving}
+\end{align}
+where $\A' \ll 1$ and $\norm{H_\text{bg}} \sim \norm{H_\text{\text{drive}}}$, justifying a perturbative treatment of the second term. To leading order in $\A'$, we consider all pairs of eigenstates of $H_\text{bg}$, where each pair approximately forms an independently interacting two-level system. In particular, we assume that we know a basis in which $H_\text{bg}$ is diagonal, whereas $H_\text{\text{drive}}$ has only off-diagonal terms which are all real numbers\footnote{The derivation for complex-valued $H_\text{drive}$ is similar to our approach below, but would introduce more notational clutter. A more clean way of dealing with complex driving terms is by simply re-defining the relative phase between eigenstates of $H_\text{bg}$.}. For a pair of these diagonal states $\ket{s_1}$, $\ket{s_2}$, we model the approximate time evolution using
+\begin{align}
+H = \Delta \frac{Z}{2} + \A \cos(\omega t + \phi) X
+\label{eq:Htls_in_many_body}
+\end{align}
+where $\A= \A' \bra{s_1} H_\text{drive} \ket{s_2}$, and $\Delta$ is the gap in the spectrum of $H_\text{bg}$ between $\ket{s_1}$ and $\ket{s_2}$. As we found in \cref{sec:resonantdriving}, for sufficiently small $\A$, no transitions between eigenstates of $H_\text{bg}$ occur unless $\omega$ is close to some energy gap $\Delta$. With the goal of making an operation of the form $\iswap_{t_1, t_2}$, we make sure that a \emph{single} pair of states is on resonance. All off-resonant states will be named spectator states, which merely pick up a dynamical phase. 
+
+
+Leaving all spectators unchanged is particularly challenging, in part because $H_\text{bg}$ is responsible for a continuously growing dynamical phase on each eigenstate. There are various ways to regain control over these phases:
+\begin{itemize}
+\item One keeps track of all dynamical phases that occur throughout the whole protocol, and undoes these at the end of the resonant driving. With $2^N$ eigenstates, this is generically infeasible unless there is an exploitable symmetry between the eigenstates. An example of such a symmetry occurs in free particle Hamiltonians, where many-particle states have energies which are sums of single-particle energies. In such cases, an appropriate eigengate can map all accumulated phases back onto a local qubit, such that phases can be undone with a local phase shift on each of the qubits. 
+\item One chooses the driving time $t_d$ (and hence the corresponding amplitude $\A$) precisely such that all two-level systems make an integer number of rotations during the protocol. This amounts to making sure that $\delta t_d = k 2\pi \ (k \in \mathbb{Z})$ for each transition. The choice of $t_d$ becomes increasingly constrained as the systems grows and increasingly many values of $\delta$ have to be taken into account. 
+\item One decomposes the driving procedure in two steps, which cancel each other's accumulated phase to leading order. 
+\end{itemize}
+In the next subsection, we elaborate on the latter approach, which we dub the halfway inversion. 
+
+As an aside, note that the form of \cref{eq:Htls_in_many_body} implies that we require the rotating wave approximation (see \cref{sec:resonantdriving}) to ensure a clean transition between states. Throughout this part of the thesis, we assume this approximation to be valid. 
+
+
+\subsection{The halfway inversion}
+\label{sec:halfwayinversion}
+Let us first remind the reader of the Hahn (or spin) echo. We consider a set of two-level systems which each evolve under a Hamiltonian of the form $H = \varepsilon_j Z$, where the energy $\varepsilon_j$ is unknown for each system $j$. For any time $t$, one can enforce each of these system to return to their initial state by implementing a Hahn echo, where the system is suddenly flipped by the $X$ operation at times $t/2$ and $t$. This is easily seen to work for any choice of $\varepsilon_j$, by using $\X \Z \X = -\Z$:
+%
+\begin{align}
+U_\text{tot} = ( \X e^{-i \varepsilon_j \Z \frac{t}{2} } \X ) e^{-i \varepsilon_j \Z \frac{t}{2} } = e^{+i \varepsilon_j \Z \frac{t}{2} } e^{-i \varepsilon_j \Z \frac{t}{2} } = \mathds{1}.
+\label{eqn:hahnecho}
+\end{align}
+%
+Note that during the driving step of our protocol, the term $H_\text{bg}$ of \cref{eqn:generaldriving} causes its eigenstates to rotate according to their energies $\lambda_j$. If $H_\text{bg}$ can be obtained from some other Hermitean operator using an eigengate, then sequential application of two eigengates $U_\text{eg}^2$ precisely inverts the spectrum of $H_\text{bg}$, effectively applying $\X$ to each two-level system formed by a pair of eigenstates. Importantly, note the difference between the driving step performed by \cref{eq:Htls_in_many_body}, which swaps \emph{only} the pair of states that is on resonance but is error-prone and slow ($|\A|$ must be small), contrasted with $U_\text{eg}^2$ which inverts \emph{all} states, and is exact and relatively fast. 
+
+Inspired by the Hahn echo, we propose to follow the same approach on a many-body system:
+%
+\begin{align}
+U_\text{tot} = \X \ U^\text{drive}_{t_d/2}(\phi_2) \ \X \ U^\text{drive}_{t_d/2}(\phi_1)
+\label{eqn:hwp-steps}
+\end{align}
+%
+Here, $U_{t}^\text{drive}(\phi)$ is the time evolution due to \cref{eq:Htls_in_many_body}, and $t_d = \pi / \Omega$ is the driving time needed for a full inversion of the resonant pair. In \cref{eqn:Udrive}, we obtained an expression for $\tilde{U}_{t_d}^\text{drive}(\phi)$, which is the same operation in the \emph{rotating frame}. The same expression in terms of the known rotating frame operators reads:
+%
+\begin{align*}
+U_\text{tot} &= \underbrace{ \X \  \exp \left( -i \omega \Z \frac{t_d}{4} \right) \ 
+\tilde{U}^\text{drive}_{t_d/2}(\phi_2)
+\ \X \  \exp \left( -i \omega \Z \frac{t_d}{4} \right)  }_{ I } 
+\ \tilde{U}^\text{drive}_{t_d/2}(\phi_1).
+\end{align*}
+%
+The first part can be rewritten as 
+%
+\begin{align*}
+I = \ & \X  \ \exp \left( -i \omega t_d \Z / 4 \right)  \ \exp \left[ -i t \ \vec{\sigma} \cdot \begin{pmatrix} n_x \\ n_y \\ n_z \end{pmatrix} \right] \X \exp \left(-i \omega t_d \Z / 4 \right)  \\
+= \ &  \X  \ \exp \left(-i \omega t_d \Z / 4 \right)  \ \exp \left[ -i t \ \vec{\sigma} \cdot \begin{pmatrix} n_x \\ n_y \\ n_z \end{pmatrix} \right] \exp \left( +i \omega t_d \Z / 4 \right) \X  \\
+= \ & \X   \ \exp \left[ -i t \ \vec{\sigma} \cdot \begin{pmatrix} n_x \cos( \omega t_d / 2 ) + n_y \sin( \omega t_d / 2  ) \\ n_y \cos(\omega t_d / 2) - n_x \sin( \omega t_d / 2) \\ n_z \end{pmatrix} \right] \X  \\
+= \ & \exp \left[ -i t \ \vec{\sigma} \cdot \begin{pmatrix}
+\A \cos( \phi_2 + \omega t_d / 2 )  \\ - \A \sin( \phi_2 + \omega t_d / 2 ) \\ - \delta / 2 
+\end{pmatrix} \right].
+\end{align*}
+%
+In the last step, we used that $\vec{n} = ( \A \cos(\phi_2) , \A \sin(\phi_2) , \delta / 2 )^T$ and applied several trigonometric product-to-sum identities. Recall that $\delta = \Delta - \omega$. All in all, we find that 
+%
+\begin{align*}
+U_\text{tot} &= \exp \left[ -i \frac{t_d}{2} \ \vec{\sigma} \cdot \begin{pmatrix}
+\A \cos( \phi_2 + \omega t_d/2 )  \\ - \A \sin( \phi_2 + \omega t_d / 2 ) \\ - \delta / 2 
+\end{pmatrix} \right]  \exp \left[ -i \frac{t_d}{2} \ \vec{\sigma} \cdot \begin{pmatrix}
+\A \cos( \phi_1 )  \\  \A \sin( \phi_1 ) \\  \delta / 2 
+\end{pmatrix} \right].
+\end{align*}
+%
+Let us first show that, despite the halfway inversion, it is still possible to perform a transition without any error if $\delta = 0$. Note that, in this picture, we perform two consecutive $\pi/2$ pulses, which form an optimal $\pi$-pulse if and only if both rotation axes align. To this end, we fix
+%
+\begin{align}
+\phi_2 = - \phi_1 - \omega t_d /2 ,
+\label{eqn:phi2}
+\end{align}
+%
+such that the overall rotation becomes 
+%
+\begin{align}
+U_\text{tot} &= \exp \left[ -i \frac{t_d}{2} \ \vec{\sigma} \cdot \begin{pmatrix}
+\A \cos( \phi_1 )  \\  \A \sin( \phi_1 ) \\ - \delta / 2 
+\end{pmatrix} \right]  \exp \left[ -i \frac{t_d}{2} \ \vec{\sigma} \cdot \begin{pmatrix}
+\A \cos( \phi_1 )  \\  \A \sin( \phi_1 ) \\  \delta / 2 
+\end{pmatrix} \right].
+\label{eqn:utothwp}
+\end{align}
+%
+It is now clear that, for $\delta = 0$, any rotation axis in the $X-Y$ plane can be obtained by an appropriate choice of $\phi_1$. We sketch a more intuitive picture of what happens to an inverting state in this case in \cref{fig:hwp}.
+
+
+\begin{figure}[hbtp]
+\begin{center}
+\def\svgwidth{.45\linewidth}
+\input{img/hwp_driving_phases.pdf_tex}
+\caption{The relative phase $\phi$ between the two resonant states under our halfway inversion protocol, depicted on the unit circle. One could interpret this as the projection of Bloch sphere vector to the $X-Y$ plane. At $t=0$, an initial state on the $+\Z$-axis is first resonantly driven towards a point that is $\phi_1$ radians away from the $+\Y$-axis \textbf{(1)}, whilst rotating around the Bloch sphere at frequency $\omega$ towards \textbf{(2)}. The halfway inversion mirrors the relative phase over the $X$-axis \textbf{(3)}, after which the rotation at frequency $\omega$ takes the state to \textbf{(4)}. A second halfway inversion takes the state back to \textbf{(1)}, completely canceling the rotation $\omega t$ due to the background Hamiltonian. }
+\label{fig:hwp}
+\end{center}
+\end{figure}
+
+
+
+Now, let us turn to the off-resonant case ($\delta \neq 0$). Ideally, we would like the off-resonant pairs of states to not change at all, leading to $U_\text{tot} = \mathds{1}$. However, we argue that this is impossible. Note that we could have chosen a different flip $\X$ together with rotation vector $\vec{n}$ precisely such that \emph{all} rotations would cancel, as in \cref{eqn:hahnecho}. Because this works for \emph{any} $\delta$,  this prohibits us from performing the required inversion on the resonant pair of states. Below, we will find that the $Z$-component of the rotation vector was canceled by the halfway inversion, but the impossibility to cancel the $\X$- and $\Y$-components leads to our main source of errors. 
+
+Let us now quantify the accuracy of $U_\text{tot}$ in the case of off-resonance, $\A \ll \delta$, where we aim to not cause any transitions at all. We define the error $\mathcal{E}$ of a unitary $U$ with respect to a target unitary $U_\text{goal}$ as
+%
+\begin{align}
+\mathcal{E}(U, U_\text{goal}) = 1 - \frac{1}{\text{dim}(U)}  | \text{Tr}( U U_\text{goal}^\dagger ) |.
+\label{eq:gatefidelity}
+\end{align}
+%
+Comparing $U_\text{tot}$ to the identity operator for the case of \cref{eqn:utothwp}, we find 
+%
+\begin{align}
+\mathcal{E}(U_\text{tot}, \mathds{1}) &= 1 - | \cos^2(n t_d /2) - \frac{(\A^2 - \frac{\delta^2}{4})}{n^2} \sin^2(n t_d/2) | \nonumber \\
+&= 1 -| 1 - \sin^2(n t_d / 2) \left( \frac{\A^2}{\A^2 + \frac{\delta^2}{4}} \right) | \nonumber \\
+&= \sin(n t_d /2 )^2 \left(  \frac{ 8 \A^2}{\delta^2} + O\left( \frac{\A^4}{\delta^4} \right) \right).
+\label{eqn:hwp_error}
+\end{align}
+%
+This shows that the error can be made arbitrarily small, by choosing a smaller $\A/\delta$, or equivalently, a longer gate time $t_d$ while keeping $H_\text{bg}$ constant.
+
+The factor $\sin(nt_d/2)$ could in principle cause the error to vanish if $n t_d = k \pi ~ (k \in \mathbb{Z})$ for every pair of states. Note that with many two-level systems, this is highly unlikely to happen and hard to track. Interestingly, by just considering the energy gaps $\delta$, one can shave off another two orders of $\frac{\A}{\delta}$ from $\mathcal{E}$ in the specific case where $\delta t_d = k 4 \pi ~ (k \in \mathbb{Z})$:
+%
+\begin{align*}
+n t_d / 2 =&   \sqrt{\A^2 + \frac{\delta^2 }{4} } t_d / 2 \\ 
+= & \frac{\delta t_d}{4}  \left[ 1 + 2 \cdot  \frac{4 A^2}{\delta^2} + O \left( \frac{A^4}{\delta^4} \right) \right]  \\
+= & k \pi + \frac{2 \pi \A}{\delta} +  O \left( \frac{\A^2}{\delta^2} \right)  \\
+\sin( n t_d / 2 )^2 = & \frac{4 \pi^2 \A^2}{\delta^2} +  O\left( \frac{\A^4}{\delta^4} \right) && \text{if } ~ k \in \mathbb{Z}.
+\end{align*}
+%
+Hence, in the special case that all dynamic phases due to $H_\text{bg}$ reset, $\mathcal{E}(U_\text{tot}, \mathds{1}) =  O\left( \frac{\A^4}{\delta^4} \right)$. 
+
+Unfortunately, in most cases, we do not find the same $O\left( \frac{\A^4}{\delta^4} \right)$ scaling when driving a many-body system, even when engineering the energy gaps $\delta$. Numerically, we find the culprit to be the two-level systems consisting of one spectator state and one transitioning state: the off-resonant transition between these pairs is not accounted for by the halfway inversion, and hence still contributes an error of the order $O\left( \frac{\A^2}{\delta^2} \right)$. Nonetheless, the cases where $\delta t_d \approx k 4 \pi$ lead to a significant improvement of our protocol's fidelity, as we will see in the numerical results in \cref{sec:numerics}.
+
+
+
+\subsection{Putting it all together: Resonantly driven multiqubit gates}
+\label{sec:resdriveprotocol}
+We turn back to the many-body Hamiltonian proposed at the start of this chapter,
+\begin{align*}
+H = H_\text{bg} + \A' \cos(\omega t + \phi) H_\text{\text{drive}}
+\end{align*}
+and its resulting unitary evolution $U_{t}^\text{drive}(\phi)$. We found that for sufficiently small $\A'$ and an appropriately chosen frequency $\omega$ and driving time $t_d$, we asymptotically approximate the operation $\iswap$ which selectively exchanges two basis states:
+\begin{align*}
+\iswap_{t_1,t_2} :=& -i e^{i \phi} \ket{t_1} \bra{t_2}  -i e^{-i \phi } \ket{t_2}\bra{t_1} +  \sum_{j \not\in \{ t_1, t_2 \} }   \ket{j}\bra{j}.
+\end{align*}
+Note the difference between the phases $e^{\pm i \phi}$: we used the convention that $\ket{t_2}$ is the state with the \emph{lower} energy (e.g. $Z \ket{t_2} = - \ket{t_2}$ in the two-level system formed by $\ket{t_1}$, $\ket{t_2}$). This gate is implemented by the sequence 
+\begin{align*}
+\iswap_{t_1,t_2} &\approx U_\text{eg}^\dagger ~ U^\text{drive}_{t_d/2}\left( - \phi - \frac{\omega t_d}{2} \right) ~ U_\text{eg}^2 ~  U^\text{drive}_{t_d/2}(\phi) ~ U_\text{eg}  && \text{(with halfway inversion)} 
+\end{align*}
+
+Alternatively, one can leave out the halfway inversion, and instead undo the dynamical phases by inverting the spectrum of $H_\text{bg}$, optionally even in the computational basis after an eigengate is performed:
+\begin{align*}
+\iswap_{t_1,t_2} & \approx U_\text{eg}^\dagger ~ e^{+i H_\text{bg} t_d} ~ U^\text{drive}_{t_d}(\phi) ~ U_\text{eg}   && \text{(without halfway inversion)}\\
+& \approx e^{+i H_\text{cb} t_d} ~ U_\text{eg}^\dagger ~ U^\text{drive}_{t_d}(\phi) ~  U_\text{eg} .
+\end{align*}
+Here $H_\text{cb} = U_\text{eg}^\dagger H_\text{bg} U_\text{eg}$ is the eigengate-partner of $H_\text{bg}$ in the computational basis. The phases of the $\iswap$ operation are again $-i \exp(\pm i \phi)$, the same as with the halfway inversion.
+
+\paragraph{}
+We are left with finding systems in which such resonantly driven gates can be realistically implemented. The following three chapters each discuss a potential system. Firstly, in \cref{chap:krawtchouk}, we look at the Krawtchouk chain, an example of an XX chain with precisely chosen weights $w$. This system features a perfect eigengate, and the link to free fermions allows us to calculate explicit matrix elements $\bra{t_1} H_\text{drive} \ket{t_2}$. Unfortunately, these turn out to be exceedingly small for pairs of states with a sufficiently unique energy gap $\Delta$. In \cref{chap:pc}, we shy away from nearest neighbor couplings, focussing on an XXX chain with long-ranged interactions that was first introduced by Polychronakos. Again, we find a quench that implements a perfect eigengate, but the matrix elements are again small. Lastly, in \cref{chap:star}, we consider a star-shaped configuration of qubits with Ising interaction. As this model is diagonal in the computational basis, no eigengates are needed. Moreover, we find that in this case the matrix elements do not decay with the system size, potentially beating the conventional decomposition into two-qubit gates. 
+%
+
+
