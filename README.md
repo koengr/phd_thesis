@@ -2,7 +2,7 @@
 
 This is the PhD dissertation by Koen Groenland, titled Quantum Protocols for Few Qubit Devices. The repository contains two things:
 1. My PhD thesis as .pdf
-2. All files used to generate the document 
+2. All `LaTeX` code and figures used to generate the document 
 
 ![](https://ir.cwi.nl/pub/29186/cover/thumb_256.jpg)
 
